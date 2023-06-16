@@ -1,0 +1,9 @@
+- html5 has only GET and POST. To use PATCH th:method="PATCH" crates a hidden method. A filter needs to be created in
+MySpringMvcDis...t.
+- @ModelAttribute can be used on method and on argument. When on method it will add by default <K,V> to the model of the
+controller
+- th:text="${person.getName()} + ', ' + ${person.getAge()}">user</a>
+Запись "user" в исходном коде представления служила fallback-значением для случая, когда выражения Thymeleaf не могут
+быть вычислены или не возвращают значения.  ???
+- @Valid Person person, BindingResult bindingResult <- should follow @Value in method signature
+
