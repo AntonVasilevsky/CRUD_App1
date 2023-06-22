@@ -1,11 +1,13 @@
 package ru.anton.springcourse.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.anton.springcourse.dao.PersonDAO;
 import ru.anton.springcourse.models.Person;
+import ru.anton.springcourse.util.PersonValidator;
 
 import javax.validation.Valid;
 
@@ -13,15 +15,18 @@ import javax.validation.Valid;
 @RequestMapping("/people")
 public class PeopleController {
     private final PersonDAO personDAO;
-
-    public PeopleController(PersonDAO personDAO){
+    private final PersonValidator personValidator;
+    @Autowired
+    public PeopleController(PersonDAO personDAO, PersonValidator personValidator){
         this.personDAO = personDAO;
+        this.personValidator = personValidator;
     }
     @GetMapping
     public String index(Model model){
         model.addAttribute("people", personDAO.index());
         return "/people/index";
     }
+
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model){
         model.addAttribute("person", personDAO.show(id));
@@ -35,6 +40,7 @@ public class PeopleController {
     @PostMapping// @ModelAtt creates new object and sets values passed in post method
     public String create(@ModelAttribute("person") @Valid Person person,
                          BindingResult bindingResult){
+        personValidator.validate(person, bindingResult);
         if(bindingResult.hasErrors()){
             return "people/new";
         }
@@ -49,6 +55,7 @@ public class PeopleController {
     @PatchMapping("/{id}")
     public String update(@PathVariable("id") int id, @ModelAttribute("person") @Valid Person person,
     BindingResult bindingResult){
+        personValidator.validate(person, bindingResult);
         if(bindingResult.hasErrors()){
             return "people/edit";
         }
